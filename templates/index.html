@@ -2,221 +2,138 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 사주 코디</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI 사주 코디네이터</title>
     <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-purple: #6a1b9a;
-            --soft-green: #e8f5e9;
-        }
-
+        :root { --coral: #E9967A; --purple: #6a1b9a; }
         body {
-            /* Gothic A1 적용 (메뉴 및 기본 글꼴) */
             font-family: 'Gothic A1', sans-serif;
-            background: linear-gradient(135deg, var(--soft-green) 0%, #f3e5f5 100%);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            /* 위쪽 정렬로 수정 */
-            align-items: flex-start; 
-            min-height: 100vh;
-            box-sizing: border-box;
+            background: #f8f9fa; margin: 0; padding: 20px;
+            display: flex; justify-content: center; align-items: flex-start; /* 상단 정렬 */
+            min-height: 100vh; box-sizing: border-box;
         }
-
         .container {
-            background-color: white;
-            padding: 30px 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            max-width: 500px;
-            width: 100%;
-            /* 모바일에서 너무 아래로 처지지 않게 상단 마진 추가 */
-            margin-top: 10px; 
-            text-align: center;
+            background: white; padding: 25px; border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 400px;
         }
-
-        /* 피커 전체 컨테이너 */
-        .picker-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 180px;
-            background: #fff;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 20px;
-            border-radius: 15px;
-        }
+        h1 { font-size: 1.2rem; text-align: center; color: #333; margin-bottom: 20px; }
         
-        /* 중앙 하이라이트 바 */
+        /* 피커 스타일 */
+        .picker-box {
+            position: relative; height: 200px; display: flex;
+            background: #fff; border-radius: 15px; overflow: hidden; margin-bottom: 20px;
+        }
         .picker-highlight {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            height: 40px;
-            background-color: rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
-            pointer-events: none;
-            z-index: 1;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 95%; height: 40px; background: rgba(0,0,0,0.04); border-radius: 10px; pointer-events: none;
         }
-        
-        /* 각 휠(년, 월, 일) 공통 스타일 */
-        .picker-wheel {
-            flex: 1;
-            height: 100%;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            -ms-overflow-style: none; /* 스크롤바 숨기기 */
-            scrollbar-width: none;
+        .wheel {
+            flex: 1; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory;
+            scrollbar-width: none; -ms-overflow-style: none;
         }
-        .picker-wheel::-webkit-scrollbar { display: none; }
-        
-        .picker-wheel ul {
-            list-style: none;
-            padding: 70px 0; /* 중앙 정렬을 위한 여백 */
-            margin: 0;
+        .wheel::-webkit-scrollbar { display: none; }
+        .wheel ul { list-style: none; padding: 80px 0; margin: 0; }
+        .wheel li {
+            height: 40px; display: flex; align-items: center; justify-content: center;
+            scroll-snap-align: center; color: #ccc; transition: 0.2s; font-size: 1rem;
         }
-        
-        .picker-wheel li {
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            scroll-snap-align: center;
-            font-size: 1.1rem;
-            color: #bbb;
-            transition: 0.3s;
-        }
-        
-        /* 선택된 항목 강조 (JS에서 클래스 추가 예정) */
-        .picker-wheel li.active {
-            color: #333;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        /* 하단 버튼 색상 변경 (스크린샷 참고) */
-        .btn-submit {
-            background-color: #E9967A !important; /* 스크린샷의 산호색 */
-        }
+        .wheel li.active { color: #333; font-weight: bold; font-size: 1.1rem; }
 
-        h1 { color: var(--primary-purple); font-size: 1.5rem; margin-bottom: 25px; }
-
-        .input-group { margin-bottom: 12px; text-align: left; }
-        
-        label { display: block; margin-bottom: 4px; color: #2e7d32; font-weight: bold; font-size: 0.9rem; }
-        
-        input {
+        .time-input {
             width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px;
-            box-sizing: border-box; font-size: 16px; background-color: #fafafa;
+            margin-bottom: 20px; font-family: 'Gothic A1'; box-sizing: border-box;
         }
 
-        button {
-            width: 100%; padding: 15px; background-color: var(--primary-purple); color: white;
-            border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold;
-            cursor: pointer; transition: 0.3s; margin-top: 15px;
+        .btn-submit {
+            width: 100%; padding: 16px; background: var(--coral); color: white;
+            border: none; border-radius: 15px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; transition: 0.3s;
         }
 
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        /* 분석 결과 영역 스타일 (본명조 적용) */
         #result {
-            margin-top: 25px;
-            text-align: left;
-            font-family: 'Noto Serif KR', serif; /* 본명조 적용 */
-            line-height: 1.8;
-            color: #333;
+            margin-top: 25px; font-family: 'Noto Serif KR', serif; /* 본명조 */
+            line-height: 1.8; color: #444;
         }
-
-        /* 접기/펴기(Details) 스타일 */
-        details {
-            background: #f9f9f9;
-            padding: 10px 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #eee;
-        }
-
-        summary {
-            font-family: 'Gothic A1', sans-serif;
-            font-weight: bold;
-            color: var(--primary-purple);
-            cursor: pointer;
-            outline: none;
-        }
-
-        summary::marker { color: #aaa; }
-
-        .loader { display: none; margin-top: 20px; font-size: 0.9rem; color: #666; }
+        details { background: #fdfdfd; padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #f0f0f0; }
+        summary { font-family: 'Gothic A1'; font-weight: bold; color: var(--purple); cursor: pointer; }
+        .loader { display: none; text-align: center; margin-top: 15px; color: #999; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔮 오늘의 사주 코디</h1>
+        <h1>날짜선택</h1>
         
-        <div class="picker-container">
+        <div class="picker-box">
             <div class="picker-highlight"></div>
-            
-            <div class="picker-wheel" id="year-wheel">
-                <ul id="year-list"></ul>
-            </div>
-            
-            <div class="picker-wheel" id="month-wheel">
-                <ul id="month-list"></ul>
-            </div>
-            
-            <div class="picker-wheel" id="day-wheel">
-                <ul id="day-list"></ul>
-            </div>
-        </div>
-        <div class="input-group">
-            <label>태어난 시간 (선택)</label>
-            <input type="text" id="time" placeholder="예: 14:30">
+            <div class="wheel" id="year-wheel"><ul id="year-list"></ul></div>
+            <div class="wheel" id="month-wheel"><ul id="month-list"></ul></div>
+            <div class="wheel" id="day-wheel"><ul id="day-list"></ul></div>
         </div>
 
-        <button onclick="analyzeSaju()">나의 행운 분석하기</button>
+        <input type="text" id="time" class="time-input" placeholder="태어난 시간 (모르면 비워둠)">
+
+        <button class="btn-submit" id="submit-btn" onclick="analyzeSaju()">
+            날짜를 선택해주세요
+        </button>
         
-        <div class="loader" id="loader">✨ 우주의 기운을 불러오는 중...</div>
+        <div class="loader" id="loader">✨ 기운을 분석하고 있습니다...</div>
         <div id="result"></div>
     </div>
 
     <script>
-        async function analyzeSaju() {
-            const year = document.getElementById('year').value;
-            const month = document.getElementById('month').value;
-            const day = document.getElementById('day').value;
-            const time = document.getElementById('time').value || "모름";
+        const wheels = ['year', 'month', 'day'];
+        const data = { year: [1950, 2026], month: [1, 12], day: [1, 31] };
 
-            if(!year || !month || !day) {
-                alert("생년월일을 입력해주세요!");
-                return;
-            }
-
-            document.getElementById('loader').style.display = 'block';
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = "";
-
-            try {
-                const response = await fetch('/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ year, month, day, time })
-                });
-                const data = await response.json();
-                
-                // 결과 데이터를 깔끔하게 배치 (Details 태그 활용)
-                // AI 응답이 적절한 섹션별로 올 것을 가정하여 구성
-                resultDiv.innerHTML = data.result;
-            } catch (error) {
-                resultDiv.innerHTML = "<p>오류가 발생했습니다. 다시 시도해주세요.</p>";
-            } finally {
-                document.getElementById('loader').style.display = 'none';
-            }
+        function init() {
+            wheels.forEach(w => {
+                const list = document.getElementById(`${w}-list`);
+                for(let i=data[w][0]; i<=data[w][1]; i++) {
+                    const li = document.createElement('li');
+                    li.innerText = i + (w==='year'?'년':w==='month'?'월':'일');
+                    li.dataset.val = i;
+                    list.appendChild(li);
+                }
+                document.getElementById(`${w}-wheel`).addEventListener('scroll', updateDisplay);
+            });
+            // 초기 위치 (1995년)
+            document.getElementById('year-wheel').scrollTop = (1995-1950)*40;
+            setTimeout(updateDisplay, 100);
         }
+
+        function updateDisplay() {
+            const vals = wheels.map(w => {
+                const wheel = document.getElementById(`${w}-wheel`);
+                const idx = Math.round(wheel.scrollTop / 40);
+                const items = wheel.querySelectorAll('li');
+                items.forEach(li => li.classList.remove('active'));
+                if(items[idx]) items[idx].classList.add('active');
+                return items[idx] ? items[idx].dataset.val : data[w][0];
+            });
+
+            const date = new Date(vals[0], vals[1]-1, vals[2]);
+            const week = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
+            document.getElementById('submit-btn').innerText = `${vals[1]}월 ${vals[2]}일(${week}) 선택`;
+            return vals;
+        }
+
+        async function analyzeSaju() {
+            const vals = updateDisplay();
+            const time = document.getElementById('time').value;
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('result').innerHTML = "";
+
+            const res = await fetch('/analyze', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({year: vals[0], month: vals[1], day: vals[2], time})
+            });
+            const json = await res.json();
+            document.getElementById('result').innerHTML = json.result;
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        init();
     </script>
 </body>
 </html>
