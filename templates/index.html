@@ -3,69 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 사주 코디네이터</title>
+    <title>AI 사주 코디</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-purple: #6a1b9a;
+            --soft-green: #e8f5e9;
+        }
+
         body {
-            font-family: 'Suit', sans-serif;
-            background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); /* 초록에서 보라로 */
+            /* Gothic A1 적용 (메뉴 및 기본 글꼴) */
+            font-family: 'Gothic A1', sans-serif;
+            background: linear-gradient(135deg, var(--soft-green) 0%, #f3e5f5 100%);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            /* 위쪽 정렬로 수정 */
+            align-items: flex-start; 
             min-height: 100vh;
+            box-sizing: border-box;
         }
+
         .container {
             background-color: white;
-            padding: 40px;
+            padding: 30px 20px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             max-width: 500px;
             width: 100%;
+            /* 모바일에서 너무 아래로 처지지 않게 상단 마진 추가 */
+            margin-top: 10px; 
             text-align: center;
         }
-        h1 { color: #4a148c; margin-bottom: 30px; } /* 진한 보라 */
-        .input-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; margin-bottom: 5px; color: #2e7d32; font-weight: bold; } /* 진한 초록 */
+
+        h1 { color: var(--primary-purple); font-size: 1.5rem; margin-bottom: 25px; }
+
+        .input-group { margin-bottom: 12px; text-align: left; }
+        
+        label { display: block; margin-bottom: 4px; color: #2e7d32; font-weight: bold; font-size: 0.9rem; }
+        
         input {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
-            box-sizing: border-box; font-size: 16px;
+            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px;
+            box-sizing: border-box; font-size: 16px; background-color: #fafafa;
         }
+
         button {
-            width: 100%; padding: 15px; background-color: #6a1b9a; color: white; /* 보라색 버튼 */
-            border: none; border-radius: 8px; font-size: 18px; cursor: pointer;
-            transition: background 0.3s; margin-top: 20px;
+            width: 100%; padding: 15px; background-color: var(--primary-purple); color: white;
+            border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; transition: 0.3s; margin-top: 15px;
         }
-        button:hover { background-color: #4a148c; }
+
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* 분석 결과 영역 스타일 (본명조 적용) */
         #result {
-            margin-top: 30px; text-align: left; line-height: 1.6;
-            background: #f1f8e9; padding: 20px; border-radius: 10px; display: none;
+            margin-top: 25px;
+            text-align: left;
+            font-family: 'Noto Serif KR', serif; /* 본명조 적용 */
+            line-height: 1.8;
+            color: #333;
         }
-        .loader { display: none; margin-top: 20px; color: #666; }
+
+        /* 접기/펴기(Details) 스타일 */
+        details {
+            background: #f9f9f9;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+
+        summary {
+            font-family: 'Gothic A1', sans-serif;
+            font-weight: bold;
+            color: var(--primary-purple);
+            cursor: pointer;
+            outline: none;
+        }
+
+        summary::marker { color: #aaa; }
+
+        .loader { display: none; margin-top: 20px; font-size: 0.9rem; color: #666; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔮 오늘의 사주 코디</h1>
+        
         <div class="input-group">
-            <label>태어난 연도 (YYYY)</label>
-            <input type="number" id="year" placeholder="예: 1990">
+            <label>태어난 연도</label>
+            <input type="number" id="year" placeholder="YYYY">
         </div>
         <div class="input-group">
-            <label>태어난 월</label>
-            <input type="number" id="month" placeholder="예: 5">
-        </div>
-        <div class="input-group">
-            <label>태어난 일</label>
-            <input type="number" id="day" placeholder="예: 20">
+            <label>태어난 월/일</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="month" placeholder="월">
+                <input type="number" id="day" placeholder="일">
+            </div>
         </div>
         <div class="input-group">
             <label>태어난 시간 (선택)</label>
-            <input type="text" id="time" placeholder="예: 14:30 (모르면 비워둠)">
+            <input type="text" id="time" placeholder="예: 14:30">
         </div>
 
-        <button onclick="analyzeSaju()">분석하기</button>
-        <div class="loader" id="loader">✨ 우주의 기운을 분석 중입니다...</div>
+        <button onclick="analyzeSaju()">나의 행운 분석하기</button>
+        
+        <div class="loader" id="loader">✨ 우주의 기운을 불러오는 중...</div>
         <div id="result"></div>
     </div>
 
@@ -74,15 +118,16 @@
             const year = document.getElementById('year').value;
             const month = document.getElementById('month').value;
             const day = document.getElementById('day').value;
-            const time = document.getElementById('time').value || "시간 모름";
+            const time = document.getElementById('time').value || "모름";
 
             if(!year || !month || !day) {
-                alert("생년월일을 모두 입력해주세요!");
+                alert("생년월일을 입력해주세요!");
                 return;
             }
 
             document.getElementById('loader').style.display = 'block';
-            document.getElementById('result').style.display = 'none';
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "";
 
             try {
                 const response = await fetch('/analyze', {
@@ -92,10 +137,11 @@
                 });
                 const data = await response.json();
                 
-                document.getElementById('result').innerHTML = data.result;
-                document.getElementById('result').style.display = 'block';
+                // 결과 데이터를 깔끔하게 배치 (Details 태그 활용)
+                // AI 응답이 적절한 섹션별로 올 것을 가정하여 구성
+                resultDiv.innerHTML = data.result;
             } catch (error) {
-                alert("오류가 발생했습니다. 다시 시도해주세요.");
+                resultDiv.innerHTML = "<p>오류가 발생했습니다. 다시 시도해주세요.</p>";
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
