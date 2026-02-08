@@ -37,6 +37,73 @@
             text-align: center;
         }
 
+        /* 피커 전체 컨테이너 */
+        .picker-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 180px;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-radius: 15px;
+        }
+        
+        /* 중앙 하이라이트 바 */
+        .picker-highlight {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* 각 휠(년, 월, 일) 공통 스타일 */
+        .picker-wheel {
+            flex: 1;
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            -ms-overflow-style: none; /* 스크롤바 숨기기 */
+            scrollbar-width: none;
+        }
+        .picker-wheel::-webkit-scrollbar { display: none; }
+        
+        .picker-wheel ul {
+            list-style: none;
+            padding: 70px 0; /* 중앙 정렬을 위한 여백 */
+            margin: 0;
+        }
+        
+        .picker-wheel li {
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: center;
+            font-size: 1.1rem;
+            color: #bbb;
+            transition: 0.3s;
+        }
+        
+        /* 선택된 항목 강조 (JS에서 클래스 추가 예정) */
+        .picker-wheel li.active {
+            color: #333;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* 하단 버튼 색상 변경 (스크린샷 참고) */
+        .btn-submit {
+            background-color: #E9967A !important; /* 스크린샷의 산호색 */
+        }
+
         h1 { color: var(--primary-purple); font-size: 1.5rem; margin-bottom: 25px; }
 
         .input-group { margin-bottom: 12px; text-align: left; }
