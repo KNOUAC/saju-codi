@@ -158,15 +158,19 @@
     <div class="container">
         <h1>🔮 오늘의 사주 코디</h1>
         
-        <div class="input-group">
-            <label>태어난 연도</label>
-            <input type="number" id="year" placeholder="YYYY">
-        </div>
-        <div class="input-group">
-            <label>태어난 월/일</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="number" id="month" placeholder="월">
-                <input type="number" id="day" placeholder="일">
+        <div class="picker-container">
+            <div class="picker-highlight"></div>
+            
+            <div class="picker-wheel" id="year-wheel">
+                <ul id="year-list"></ul>
+            </div>
+            
+            <div class="picker-wheel" id="month-wheel">
+                <ul id="month-list"></ul>
+            </div>
+            
+            <div class="picker-wheel" id="day-wheel">
+                <ul id="day-list"></ul>
             </div>
         </div>
         <div class="input-group">
