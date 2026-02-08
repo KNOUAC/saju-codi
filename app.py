@@ -50,7 +50,10 @@ def analyze():
         response = model.generate_content(prompt)
         return jsonify({'result': response.text})
     except Exception as e:
-        return jsonify({'result': "죄송합니다. AI가 잠시 생각에 잠겼네요. 다시 시도해주세요!"})
+        # 이 줄을 추가하면 Render Logs 탭에서 실제 에러 내용을 볼 수 있습니다.
+        print(f"--- API ERROR: {e} ---") 
+        # 화면에도 에러 내용을 잠시 표시해봅니다.
+        return jsonify({'result': f"AI 연결 실패: {str(e)}"})
 
 if __name__ == '__main__':
     app.run(debug=True)
