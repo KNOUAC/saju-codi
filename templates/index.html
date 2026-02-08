@@ -3,134 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI 사주 코디네이터</title>
+    <title>Theo :: 사주 패션 디렉터</title>
     <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --coral: #E9967A; --purple: #6a1b9a; }
+        :root { --coral: #E9967A; --purple: #6a1b9a; --bg-gray: #f8f9fa; }
+        
         body {
             font-family: 'Gothic A1', sans-serif;
-            background: #f8f9fa; margin: 0; padding: 20px;
-            display: flex; justify-content: center; align-items: flex-start; /* 상단 정렬 */
+            background: var(--bg-gray); margin: 0; padding: 15px;
+            display: flex; justify-content: center; align-items: flex-start;
             min-height: 100vh; box-sizing: border-box;
         }
+
         .container {
-            background: white; padding: 25px; border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 400px;
+            background: white; padding: 25px 20px; border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 360px;
         }
-        h1 { font-size: 1.2rem; text-align: center; color: #333; margin-bottom: 20px; }
+
+        h1 { font-size: 1.1rem; text-align: center; color: #333; margin-bottom: 20px; }
         
-        /* 피커 스타일 */
-        .picker-box {
-            position: relative; height: 200px; display: flex;
-            background: #fff; border-radius: 15px; overflow: hidden; margin-bottom: 20px;
+        .section-label {
+            font-size: 0.9rem; font-weight: bold; color: var(--purple);
+            margin: 15px 0 8px 5px; display: block;
         }
+
+        .picker-box {
+            position: relative; height: 150px; display: flex;
+            background: #fff; border-radius: 15px; overflow: hidden; margin-bottom: 10px;
+            border: 1px solid #f0f0f0; transition: all 0.3s ease;
+        }
+        
+        .picker-box.disabled {
+            opacity: 0.3; pointer-events: none; background: #eee; height: 50px;
+        }
+
         .picker-highlight {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 95%; height: 40px; background: rgba(0,0,0,0.04); border-radius: 10px; pointer-events: none;
+            width: 92%; height: 36px; background: rgba(233, 150, 122, 0.1);
+            border-radius: 8px; pointer-events: none; z-index: 0;
         }
+
         .wheel {
             flex: 1; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory;
-            scrollbar-width: none; -ms-overflow-style: none;
+            scrollbar-width: none; -ms-overflow-style: none; z-index: 1;
         }
         .wheel::-webkit-scrollbar { display: none; }
-        .wheel ul { list-style: none; padding: 80px 0; margin: 0; }
+        
+        .wheel ul { list-style: none; padding: 57px 0; margin: 0; text-align: center; }
         .wheel li {
-            height: 40px; display: flex; align-items: center; justify-content: center;
+            height: 36px; display: flex; align-items: center; justify-content: center;
             scroll-snap-align: center; color: #ccc; transition: 0.2s; font-size: 1rem;
         }
         .wheel li.active { color: #333; font-weight: bold; font-size: 1.1rem; }
 
-        .time-input {
-            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px;
-            margin-bottom: 20px; font-family: 'Gothic A1'; box-sizing: border-box;
+        .time-toggle {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+            font-size: 0.9rem; color: #555; cursor: pointer;
         }
+        .time-toggle input { accent-color: var(--coral); width: 18px; height: 18px; }
 
         .btn-submit {
-            width: 100%; padding: 16px; background: var(--coral); color: white;
-            border: none; border-radius: 15px; font-size: 1.1rem; font-weight: bold;
-            cursor: pointer; transition: 0.3s;
+            width: 100%; padding: 15px; background: var(--coral); color: white;
+            border: none; border-radius: 15px; font-size: 1rem; font-weight: bold;
+            cursor: pointer; transition: 0.3s; margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(233, 150, 122, 0.3);
         }
+        .btn-submit:active { transform: scale(0.98); }
 
         #result {
-            margin-top: 25px; font-family: 'Noto Serif KR', serif; /* 본명조 */
-            line-height: 1.8; color: #444;
+            margin-top: 20px; font-family: 'Noto Serif KR', serif;
+            line-height: 1.7; color: #444; font-size: 0.95rem;
         }
-        details { background: #fdfdfd; padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #f0f0f0; }
-        summary { font-family: 'Gothic A1'; font-weight: bold; color: var(--purple); cursor: pointer; }
-        .loader { display: none; text-align: center; margin-top: 15px; color: #999; }
+        details { background: #fcfcfc; padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #eee; }
+        summary { font-family: 'Gothic A1'; font-weight: bold; color: var(--purple); cursor: pointer; font-size: 0.9rem; list-style: none; }
+        summary::-webkit-details-marker { display: none; }
+        
+        .loader { display: none; text-align: center; margin-top: 15px; font-size: 0.85rem; color: #999; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>날짜선택</h1>
+        <h1>나의 운세 정보 입력</h1>
         
-        <div class="picker-box">
+        <span class="section-label">생년월일</span>
+        <div class="picker-box" id="date-picker-box">
             <div class="picker-highlight"></div>
             <div class="wheel" id="year-wheel"><ul id="year-list"></ul></div>
             <div class="wheel" id="month-wheel"><ul id="month-list"></ul></div>
             <div class="wheel" id="day-wheel"><ul id="day-list"></ul></div>
         </div>
 
-        <input type="text" id="time" class="time-input" placeholder="태어난 시간 (모르면 비워둠)">
+        <label class="time-toggle">
+            <input type="checkbox" id="know-time" onchange="toggleTimePicker()">
+            태어난 시간을 알고 있습니다
+        </label>
+
+        <div class="picker-box disabled" id="time-picker-box">
+            <div class="picker-highlight"></div>
+            <div class="wheel" id="ampm-wheel"><ul id="ampm-list"></ul></div>
+            <div class="wheel" id="hour-wheel"><ul id="hour-list"></ul></div>
+            <div class="wheel" id="min-wheel"><ul id="min-list"></ul></div>
+        </div>
 
         <button class="btn-submit" id="submit-btn" onclick="analyzeSaju()">
             날짜를 선택해주세요
         </button>
         
-        <div class="loader" id="loader">✨ 기운을 분석하고 있습니다...</div>
+        <div class="loader" id="loader">✨ Theo가 당신의 기운을 읽고 있습니다...</div>
         <div id="result"></div>
     </div>
 
     <script>
-        const wheels = ['year', 'month', 'day'];
-        const data = { year: [1950, 2026], month: [1, 12], day: [1, 31] };
+        const dateWheels = ['year', 'month', 'day'];
+        const timeWheels = ['ampm', 'hour', 'min'];
+        const yearRange = [1950, 2026];
 
         function init() {
-            wheels.forEach(w => {
-                const list = document.getElementById(`${w}-list`);
-                for(let i=data[w][0]; i<=data[w][1]; i++) {
-                    const li = document.createElement('li');
-                    li.innerText = i + (w==='year'?'년':w==='month'?'월':'일');
-                    li.dataset.val = i;
-                    list.appendChild(li);
-                }
+            createList('year-list', yearRange[0], yearRange[1], '년');
+            createList('month-list', 1, 12, '월');
+            
+            const ampmList = document.getElementById('ampm-list');
+            ['오전', '오후'].forEach(t => {
+                const li = document.createElement('li'); li.innerText = t; li.dataset.val = t;
+                ampmList.appendChild(li);
+            });
+            createList('hour-list', 1, 12, '시');
+            createList('min-list', 0, 59, '분', true);
+
+            [...dateWheels, ...timeWheels].forEach(w => {
                 document.getElementById(`${w}-wheel`).addEventListener('scroll', updateDisplay);
             });
-            // 초기 위치 (1995년)
-            document.getElementById('year-wheel').scrollTop = (1995-1950)*40;
+
+            setWheelPos('year', 1995 - yearRange[0]);
+            setWheelPos('month', 5);
+            setWheelPos('day', 14);
+            setWheelPos('hour', 8);
+            
+            updateDays(1995, 6);
             setTimeout(updateDisplay, 100);
         }
 
-        function updateDisplay() {
-            const vals = wheels.map(w => {
-                const wheel = document.getElementById(`${w}-wheel`);
-                const idx = Math.round(wheel.scrollTop / 40);
-                const items = wheel.querySelectorAll('li');
-                items.forEach(li => li.classList.remove('active'));
-                if(items[idx]) items[idx].classList.add('active');
-                return items[idx] ? items[idx].dataset.val : data[w][0];
-            });
+        function createList(id, start, end, unit, pad=false) {
+            const list = document.getElementById(id);
+            for(let i=start; i<=end; i++) {
+                const li = document.createElement('li'); 
+                const val = pad ? String(i).padStart(2, '0') : i;
+                li.innerText = val + unit; li.dataset.val = val;
+                list.appendChild(li);
+            }
+        }
 
-            const date = new Date(vals[0], vals[1]-1, vals[2]);
+        function setWheelPos(id, idx) {
+            document.getElementById(`${id}-wheel`).scrollTop = idx * 36;
+        }
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function updateDays(year, month) {
+            const dayList = document.getElementById('day-list');
+            let lastDay = 31;
+            if([4, 6, 9, 11].includes(month)) lastDay = 30;
+            else if(month === 2) lastDay = isLeapYear(year) ? 29 : 28;
+
+            const currentItems = dayList.querySelectorAll('li').length;
+            if(currentItems !== lastDay) {
+                dayList.innerHTML = "";
+                for(let i=1; i<=lastDay; i++) {
+                    const li = document.createElement('li'); li.innerText = i+'일'; li.dataset.val = i;
+                    dayList.appendChild(li);
+                }
+            }
+        }
+
+        function toggleTimePicker() {
+            const isChecked = document.getElementById('know-time').checked;
+            const box = document.getElementById('time-picker-box');
+            if(isChecked) {
+                box.classList.remove('disabled');
+            } else {
+                box.classList.add('disabled');
+            }
+            updateDisplay();
+        }
+
+        function getWheelVal(id) {
+            const wheel = document.getElementById(`${id}-wheel`);
+            const idx = Math.round(wheel.scrollTop / 36);
+            const items = wheel.querySelectorAll('li');
+            items.forEach(li => li.classList.remove('active'));
+            if(items[idx]) {
+                items[idx].classList.add('active');
+                return items[idx].dataset.val;
+            }
+            return null;
+        }
+
+        function updateDisplay() {
+            const y = parseInt(getWheelVal('year'));
+            const m = parseInt(getWheelVal('month'));
+            updateDays(y, m);
+            const d = parseInt(getWheelVal('day'));
+            
+            const isTimeKnown = document.getElementById('know-time').checked;
+            let timeText = "";
+            let timeVal = "";
+
+            if(isTimeKnown) {
+                const ampm = getWheelVal('ampm');
+                const hour = getWheelVal('hour');
+                const min = getWheelVal('min');
+                timeText = ` ${ampm} ${hour}:${min}`;
+                timeVal = `${ampm} ${hour}시 ${min}분`;
+            } else {
+                timeText = " (시간 모름)";
+            }
+
+            const date = new Date(y, m-1, d);
             const week = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
-            document.getElementById('submit-btn').innerText = `${vals[1]}월 ${vals[2]}일(${week}) 선택`;
-            return vals;
+            
+            document.getElementById('submit-btn').innerText = `${m}월 ${d}일(${week})${timeText} 선택`;
+            
+            return { y, m, d, timeVal };
         }
 
         async function analyzeSaju() {
             const vals = updateDisplay();
-            const time = document.getElementById('time').value;
             document.getElementById('loader').style.display = 'block';
             document.getElementById('result').innerHTML = "";
 
-            const res = await fetch('/analyze', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({year: vals[0], month: vals[1], day: vals[2], time})
-            });
-            const json = await res.json();
-            document.getElementById('result').innerHTML = json.result;
-            document.getElementById('loader').style.display = 'none';
+            try {
+                const res = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        year: vals.y, month: vals.m, day: vals.d, time: vals.timeVal || "모름"
+                    })
+                });
+                const json = await res.json();
+                document.getElementById('result').innerHTML = json.result;
+            } catch (e) {
+                document.getElementById('result').innerHTML = "Theo와 연결이 지연되고 있습니다.";
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
         }
 
         init();
