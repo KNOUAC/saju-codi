@@ -97,7 +97,7 @@
     <div class="container">
         <h1>사주(四柱) 입력</h1>
         
-        <span class="section-label">생년월일</span>
+        <span class="section-label">생년월일(양력)</span>
         <div class="picker-box" id="date-picker-box">
             <div class="picker-highlight"></div>
             <div class="wheel" id="year-wheel"><ul id="year-list"></ul></div>
@@ -128,7 +128,7 @@
     <script>
         const dateWheels = ['year', 'month', 'day'];
         const timeWheels = ['ampm', 'hour', 'min'];
-        const yearRange = [1950, 2026];
+        const yearRange = [1944, 2026];
 
         function init() {
             createList('year-list', yearRange[0], yearRange[1], '년');
