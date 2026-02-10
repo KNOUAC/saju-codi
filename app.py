@@ -36,8 +36,7 @@ def index():
 def analyze():
     # 시도할 모델 리스트
     candidate_models = [
-        "gemini-3-flash-preview",
-        "gemini-pro"
+        "gemini-3-flash-preview"
     ]
     
     data = request.json
@@ -64,7 +63,7 @@ def analyze():
     1. **중요: 모든 강조(Bold) 처리는 마크다운(**)이 아닌 HTML `<b>` 태그를 사용하세요.**
     2. 인사말: 반드시 `<div class="greeting">` 태그로 감싸서 작성하세요. 
        문구: "안녕하세요, 기다려 주셔서 감사합니다. {today_date} 기준, ... (후략)"
-    3. 소개 생략: 자기소개(Theo입니다 등)는 이미 UI에 있으므로 절대 포함하지 마세요.
+    3. 소개 생략: 자기소개(Theo입니다 등)는 이미 UI에 있으므로 포함하지 마세요.
     4. 형식: 모든 섹션('오늘의 사주 분석', '오늘의 행운 컬러', '오늘의 추천 코디', '오늘의 마음가짐')은 <details><summary>... [보기]</summary></details> 태그로 감싸서 접어두세요.
     5. 이모티콘: '오늘의 마음가짐' 제목에는 🧠(브레인)을 사용하세요.
     6. 톤앤매너: 본명조 서체에 어울리는 우아하고 전문적인 어조를 사용하세요.
