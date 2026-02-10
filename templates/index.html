@@ -4,131 +4,148 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Theo :: 사주 디렉터</title>
-    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@300;400;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --coral: #E9967A; --purple: #6a1b9a; --bg-gray: #f8f9fa; }
+        :root { 
+            --bg-soft: #F4F4F4;
+            --card-white: #FFFFFF;
+            --border-light: #E0E0E0;
+            --text-dark: #333333;
+            --text-mute: #777777;
+            --accent-black: #222222;
+        }
         
         body {
             font-family: 'Gothic A1', sans-serif;
-            background: var(--bg-gray); margin: 0; padding: 15px;
+            background: var(--bg-soft); margin: 0; padding: 20px;
             display: flex; justify-content: center; align-items: flex-start;
-            min-height: 100vh; box-sizing: border-box;
+            min-height: 100vh; box-sizing: border-box; color: var(--text-dark);
         }
 
-        .container {
-            background: white; padding: 25px 20px; border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 360px;
+        .main-wrapper {
+            width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 16px;
         }
 
-        h1 { font-size: 1.1rem; text-align: center; color: #333; margin-bottom: 20px; }
+        /* 헤더 섹션 */
+        .header-card {
+            background: var(--card-white); padding: 24px; border-radius: 12px;
+            border: 1px solid var(--border-light); text-align: center;
+        }
+        h1 { font-size: 1.2rem; margin: 0; font-weight: 700; letter-spacing: -0.5px; }
+        .sub-desc { font-size: 0.8rem; color: var(--text-mute); margin-top: 4px; }
+
+        /* 입력 카드 공통 */
+        .input-card {
+            background: var(--card-white); padding: 20px; border-radius: 12px;
+            border: 1px solid var(--border-light); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
         
         .section-label {
-            font-size: 0.9rem; font-weight: bold; color: var(--purple);
-            margin: 15px 0 8px 5px; display: block;
+            font-size: 0.85rem; font-weight: 700; color: var(--text-dark);
+            margin-bottom: 12px; display: block;
         }
 
-        /* 휠 피커 스타일 */
+        /* 피커 스타일 - UI Kit 스타일 */
         .picker-box {
-            position: relative; height: 150px; display: flex;
-            background: #fff; border-radius: 15px; overflow: hidden; margin-bottom: 10px;
-            border: 1px solid #f0f0f0; transition: all 0.3s ease;
+            position: relative; height: 140px; display: flex;
+            background: #FAFAFA; border-radius: 8px; overflow: hidden;
+            border: 1px solid var(--border-light);
         }
-        .picker-box.disabled { opacity: 0.3; pointer-events: none; background: #eee; height: 50px; }
+        .picker-box.disabled { opacity: 0.4; filter: grayscale(1); background: #F0F0F0; }
+        
         .picker-highlight {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 92%; height: 36px; background: rgba(233, 150, 122, 0.1);
-            border-radius: 8px; pointer-events: none; z-index: 0;
+            width: 95%; height: 34px; border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light); pointer-events: none; z-index: 0;
         }
+        
         .wheel {
             flex: 1; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory;
-            scrollbar-width: none; -ms-overflow-style: none; z-index: 1;
+            scrollbar-width: none; z-index: 1;
         }
         .wheel::-webkit-scrollbar { display: none; }
-        .wheel ul { list-style: none; padding: 57px 0; margin: 0; text-align: center; }
+        .wheel ul { list-style: none; padding: 53px 0; margin: 0; text-align: center; }
         .wheel li {
-            height: 36px; display: flex; align-items: center; justify-content: center;
-            scroll-snap-align: center; color: #ccc; transition: 0.2s; font-size: 1rem;
+            height: 34px; display: flex; align-items: center; justify-content: center;
+            scroll-snap-align: center; color: #BBB; transition: 0.2s; font-size: 0.9rem;
         }
-        .wheel li.active { color: #333; font-weight: bold; font-size: 1.1rem; }
+        .wheel li.active { color: var(--accent-black); font-weight: 700; font-size: 1rem; }
 
-        .time-toggle {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-            font-size: 0.9rem; color: #555; cursor: pointer;
+        /* 체크박스 영역 */
+        .toggle-area {
+            display: flex; align-items: center; gap: 10px; padding: 4px 0;
+            cursor: pointer; font-size: 0.9rem; font-weight: 500;
         }
-        .time-toggle input { accent-color: var(--coral); width: 18px; height: 18px; }
+        .toggle-area input { width: 16px; height: 16px; cursor: pointer; }
 
+        /* 버튼 - 블랙 & 미니멀 */
         .btn-submit {
-            width: 100%; padding: 15px; background: var(--coral); color: white;
-            border: none; border-radius: 15px; font-size: 1rem; font-weight: bold;
-            cursor: pointer; transition: 0.3s; margin-top: 20px;
-            box-shadow: 0 4px 10px rgba(233, 150, 122, 0.3);
+            width: 100%; padding: 16px; background: var(--accent-black); color: white;
+            border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; transition: 0.2s; margin-top: 8px;
         }
-        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:active { transform: scale(0.98); background: #000; }
 
-        /* --- 결과 화면 스타일 수정 --- */
-        #result {
-            margin-top: 25px; 
-            font-family: 'Noto Serif KR', serif; /* 기본은 본명조 */
-            line-height: 1.7; color: #444; font-size: 0.95rem;
+        /* 결과 영역 */
+        #result { margin-top: 8px; }
+        .result-card {
+            background: var(--card-white); padding: 20px; border-radius: 12px;
+            border: 1px solid var(--border-light); font-family: 'Noto Serif KR', serif;
+            line-height: 1.8; color: #444; font-size: 0.95rem;
         }
         
-        /* 인삿말 전용 스타일 (Gothic A1 적용 + 여백 추가) */
-        .greeting {
-            font-family: 'Gothic A1', sans-serif !important;
-            color: #333;
-            margin-bottom: 30px; /* 인삿말과 아래 내용 사이 간격 넓힘 */
-            line-height: 1.6;
-        }
-
-        /* 굵은 글씨 스타일 */
-        b, strong {
-            font-weight: 700;
-            color: #222;
-        }
-
-        details { background: #fcfcfc; padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #eee; }
-        summary { font-family: 'Gothic A1'; font-weight: bold; color: var(--purple); cursor: pointer; font-size: 0.9rem; list-style: none; }
-        summary::-webkit-details-marker { display: none; }
+        details { background: #FDFDFD; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-light); }
+        summary { font-family: 'Gothic A1'; font-weight: 700; color: var(--text-dark); cursor: pointer; font-size: 0.85rem; }
         
-        .loader { display: none; text-align: center; margin-top: 15px; font-size: 0.85rem; color: #999; }
+        .loader { display: none; text-align: center; padding: 20px; font-size: 0.85rem; color: var(--text-mute); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>사주(四柱) 입력</h1>
+    <div class="main-wrapper">
+        <header class="header-card">
+            <h1>사주(四柱) 입력</h1>
+            <div class="sub-desc">당신의 기운을 분석하기 위한 정보를 입력해주세요.</div>
+        </header>
         
-        <span class="section-label">생년월일(양력)</span>
-        <div class="picker-box" id="date-picker-box">
-            <div class="picker-highlight"></div>
-            <div class="wheel" id="year-wheel"><ul id="year-list"></ul></div>
-            <div class="wheel" id="month-wheel"><ul id="month-list"></ul></div>
-            <div class="wheel" id="day-wheel"><ul id="day-list"></ul></div>
-        </div>
+        <main class="input-card">
+            <span class="section-label">생년월일 (양력)</span>
+            <div class="picker-box" id="date-picker-box">
+                <div class="picker-highlight"></div>
+                <div class="wheel" id="year-wheel"><ul id="year-list"></ul></div>
+                <div class="wheel" id="month-wheel"><ul id="month-list"></ul></div>
+                <div class="wheel" id="day-wheel"><ul id="day-list"></ul></div>
+            </div>
+            
+            <div style="margin-top: 20px; margin-bottom: 20px;">
+                <label class="toggle-area">
+                    <input type="checkbox" id="know-time" onchange="toggleTimePicker()">
+                    태어난 시간을 알고 있습니다
+                </label>
+            </div>
 
-        <label class="time-toggle">
-            <input type="checkbox" id="know-time" onchange="toggleTimePicker()">
-            태어난 시간을 알고 있습니다
-        </label>
+            <span class="section-label">태어난 시간</span>
+            <div class="picker-box disabled" id="time-picker-box">
+                <div class="picker-highlight"></div>
+                <div class="wheel" id="ampm-wheel"><ul id="ampm-list"></ul></div>
+                <div class="wheel" id="hour-wheel"><ul id="hour-list"></ul></div>
+                <div class="wheel" id="min-wheel"><ul id="min-list"></ul></div>
+            </div>
 
-        <div class="picker-box disabled" id="time-picker-box">
-            <div class="picker-highlight"></div>
-            <div class="wheel" id="ampm-wheel"><ul id="ampm-list"></ul></div>
-            <div class="wheel" id="hour-wheel"><ul id="hour-list"></ul></div>
-            <div class="wheel" id="min-wheel"><ul id="min-list"></ul></div>
-        </div>
-
-        <button class="btn-submit" id="submit-btn" onclick="analyzeSaju()">
-            날짜를 선택해주세요
-        </button>
+            <button class="btn-submit" id="submit-btn" onclick="analyzeSaju()">
+                날짜 선택 완료
+            </button>
+        </main>
         
         <div class="loader" id="loader">✨ Theo가 당신의 기운을 읽고 있습니다...</div>
         <div id="result"></div>
     </div>
 
     <script>
+        /* [기존 로직 유지하되 수치 조정] */
         const dateWheels = ['year', 'month', 'day'];
         const timeWheels = ['ampm', 'hour', 'min'];
         const yearRange = [1944, 2026];
+        const itemHeight = 34; // 조정된 높이
 
         function init() {
             createList('year-list', yearRange[0], yearRange[1], '년');
@@ -166,7 +183,7 @@
         }
 
         function setWheelPos(id, idx) {
-            document.getElementById(`${id}-wheel`).scrollTop = idx * 36;
+            document.getElementById(`${id}-wheel`).scrollTop = idx * itemHeight;
         }
 
         function isLeapYear(year) {
@@ -192,17 +209,13 @@
         function toggleTimePicker() {
             const isChecked = document.getElementById('know-time').checked;
             const box = document.getElementById('time-picker-box');
-            if(isChecked) {
-                box.classList.remove('disabled');
-            } else {
-                box.classList.add('disabled');
-            }
+            isChecked ? box.classList.remove('disabled') : box.classList.add('disabled');
             updateDisplay();
         }
 
         function getWheelVal(id) {
             const wheel = document.getElementById(`${id}-wheel`);
-            const idx = Math.round(wheel.scrollTop / 36);
+            const idx = Math.round(wheel.scrollTop / itemHeight);
             const items = wheel.querySelectorAll('li');
             items.forEach(li => li.classList.remove('active'));
             if(items[idx]) {
@@ -219,25 +232,12 @@
             const d = parseInt(getWheelVal('day'));
             
             const isTimeKnown = document.getElementById('know-time').checked;
-            let timeText = "";
-            let timeVal = "";
-
-            if(isTimeKnown) {
-                const ampm = getWheelVal('ampm');
-                const hour = getWheelVal('hour');
-                const min = getWheelVal('min');
-                timeText = ` ${ampm} ${hour}:${min}`;
-                timeVal = `${ampm} ${hour}시 ${min}분`;
-            } else {
-                timeText = " (시간 모름)";
-            }
-
+            let timeText = isTimeKnown ? ` ${getWheelVal('ampm')} ${getWheelVal('hour')}:${getWheelVal('min')}` : "";
             const date = new Date(y, m-1, d);
             const week = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
             
-            document.getElementById('submit-btn').innerText = `${m}월 ${d}일(${week})${timeText} 선택`;
-            
-            return { y, m, d, timeVal };
+            document.getElementById('submit-btn').innerText = `${m}월 ${d}일(${week})${timeText} 분석하기`;
+            return { y, m, d, timeVal: isTimeKnown ? `${getWheelVal('ampm')} ${getWheelVal('hour')}시 ${getWheelVal('min')}분` : "모름" };
         }
 
         async function analyzeSaju() {
@@ -249,14 +249,12 @@
                 const res = await fetch('/analyze', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        year: vals.y, month: vals.m, day: vals.d, time: vals.timeVal || "모름"
-                    })
+                    body: JSON.stringify({ year: vals.y, month: vals.m, day: vals.d, time: vals.timeVal })
                 });
                 const json = await res.json();
-                document.getElementById('result').innerHTML = json.result;
+                document.getElementById('result').innerHTML = `<div class="result-card">${json.result}</div>`;
             } catch (e) {
-                document.getElementById('result').innerHTML = "Theo와 연결이 지연되고 있습니다.";
+                document.getElementById('result').innerHTML = `<div class="result-card">서버 연결에 실패했습니다.</div>`;
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
