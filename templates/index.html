@@ -274,36 +274,21 @@
 
         async function analyzeSaju() {
             const vals = updateDisplay();
-            // 데이터 유효성 검사
-            if(!vals.y || !vals.m || !vals.d) {
-                alert("날짜를 다시 확인해주세요.");
-                return;
-            }
-
             document.getElementById('loader').style.display = 'block';
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = "";
+            document.getElementById('result').innerHTML = "";
 
             try {
                 const res = await fetch('/analyze', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        year: vals.y, 
-                        month: vals.m, 
-                        day: vals.d, 
-                        time: vals.timeVal
+                        year: vals.y, month: vals.m, day: vals.d, time: vals.timeVal || "모름"
                     })
                 });
-
-                if (!res.ok) throw new Error('Network response was not ok');
-
                 const json = await res.json();
-                // 기존 코드와 동일한 출력 방식 유지 (안정성)
-                resultDiv.innerHTML = `<div class="result-card">${json.result}</div>`;
+                document.getElementById('result').innerHTML = json.result;
             } catch (e) {
-                console.error("Fetch Error:", e);
-                resultDiv.innerHTML = `<div class="result-card">연결에 실패했습니다. 서버가 실행 중인지 확인해주세요.</div>`;
+                document.getElementById('result').innerHTML = "Theo와 연결이 지연되고 있습니다.";
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
