@@ -59,7 +59,7 @@ def analyze():
         # 2. 모델 호출 (핵심 수정 부분)
         # 문서의 'gemini-3-flash-preview' 대신 현재 사용 가능한 모델 사용
         response = client.models.generate_content(
-            model="gemini-2.0-flash", 
+            model="gemini-1.5-flash", 
             contents=prompt
         )
         
