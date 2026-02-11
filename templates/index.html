@@ -86,7 +86,7 @@
         }
         .btn-submit:active { transform: scale(0.98); background: #000; }
 
-        /* 결과 영역 스타일 수정 */
+        /* [결과 영역 스타일 수정] */
         #result { margin-top: 8px; }
         
         .result-card {
@@ -95,31 +95,39 @@
             border-radius: 12px;
             border: 1px solid var(--border-light); 
             
-            /* [수정] 본문 폰트 및 사이즈를 인삿말과 완전히 동일하게 설정 */
+            /* 기본 폰트 설정 */
             font-family: 'Noto Serif KR', serif;
             font-size: 0.95rem; 
             line-height: 1.8; 
             color: #444; 
         }
 
-        /* 인삿말 클래스: 본문과 동일한 스타일 유지 */
+        /* 1. 인삿말 (파란 박스) 스타일 명시 */
         .greeting {
             font-family: 'Noto Serif KR', serif;
-            font-size: 0.95rem;
+            font-size: 0.95rem; /* 사이즈 통일 */
             line-height: 1.8;
-            margin-bottom: 15px;
+            color: #444;
+            margin-bottom: 15px; 
         }
         
+        /* 2. 디테일 박스 (빨간 박스 내용) 스타일 명시 */
         details { 
             background: #FDFDFD; 
             padding: 12px; 
             border-radius: 8px; 
             margin-top: 10px; 
             border: 1px solid var(--border-light); 
+            
+            /* 내부 텍스트 폰트를 인삿말과 완벽히 동일하게 강제 설정 */
+            font-family: 'Noto Serif KR', serif;
+            font-size: 0.95rem; /* 사이즈 통일 */
+            line-height: 1.8;
+            color: #444;
         }
         
         summary { 
-            /* 제목 폰트 유지 (Gothic A1) */
+            /* 제목은 고딕체 유지, 크기만 내용과 비슷하게 맞춤 */
             font-family: 'Gothic A1', sans-serif; 
             font-weight: 700; 
             color: var(--text-dark); 
@@ -128,7 +136,7 @@
             outline: none;
         }
 
-        /* [수정] 상세 내용이 펼쳐졌을 때, 제목(summary) 하단에 간격 추가 */
+        /* 내용이 펼쳐졌을 때 제목과 본문 사이 간격 */
         details[open] summary {
             margin-bottom: 12px;
         }
