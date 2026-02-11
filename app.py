@@ -50,7 +50,7 @@ def analyze():
     korea_now = datetime.now() + timedelta(hours=9)
     today_date = korea_now.strftime("%Y년 %m월 %d일")
     
-    # 프롬프트: 문구 변경 없음, HTML 구조 유지
+    # 프롬프트: 스타일은 CSS에서 제어하므로 HTML 구조만 깔끔하게 유지
     prompt = f"""
     당신은 트렌디한 '퍼스널 사주 패션 디렉터' Theo입니다. 
     
