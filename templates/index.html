@@ -45,7 +45,7 @@
             margin-bottom: 12px; display: block;
         }
 
-        /* 피커 스타일 - UI Kit 스타일 */
+        /* 피커 스타일 */
         .picker-box {
             position: relative; height: 140px; display: flex;
             background: #FAFAFA; border-radius: 8px; overflow: hidden;
@@ -78,7 +78,7 @@
         }
         .toggle-area input { width: 16px; height: 16px; cursor: pointer; }
 
-        /* 버튼 - 블랙 & 미니멀 */
+        /* 버튼 */
         .btn-submit {
             width: 100%; padding: 16px; background: var(--accent-black); color: white;
             border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 700;
@@ -86,44 +86,63 @@
         }
         .btn-submit:active { transform: scale(0.98); background: #000; }
 
-        /* 결과 영역 */
+        /* 결과 영역 (폰트 수정 핵심 부분) */
         #result { margin-top: 8px; }
+        
         .result-card {
-            background: var(--card-white); padding: 20px; border-radius: 12px;
-            border: 1px solid var(--border-light); font-family: 'Noto Serif KR', serif;
-            line-height: 1.8; color: #444; font-size: 0.95rem;
+            background: var(--card-white); 
+            padding: 20px; 
+            border-radius: 12px;
+            border: 1px solid var(--border-light); 
+            
+            /* [수정] 기본 폰트를 '본명조'로 설정하고 크기 통일 */
+            font-family: 'Noto Serif KR', serif;
+            font-size: 0.95rem; 
+            line-height: 1.8; 
+            color: #444; 
+        }
+
+        /* 인삿말 클래스 (명시적 적용) */
+        .greeting {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
         }
         
-        details { background: #FDFDFD; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-light); }
-        summary { font-family: 'Gothic A1'; font-weight: 700; color: var(--text-dark); cursor: pointer; font-size: 0.85rem; }
+        details { 
+            background: #FDFDFD; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-top: 10px; 
+            border: 1px solid var(--border-light); 
+        }
         
-        /* 기존 .loader 부분을 아래 내용으로 완전히 교체해주세요 */
+        summary { 
+            /* [수정] 제목 부분은 Gothic A1 유지, 크기는 0.95rem으로 키움 */
+            font-family: 'Gothic A1', sans-serif; 
+            font-weight: 700; 
+            color: var(--text-dark); 
+            cursor: pointer; 
+            font-size: 0.95rem; 
+        }
+        
         .loader { 
             display: none; 
             text-align: center; 
             padding: 20px; 
-            font-size: 0.95rem;       /* 효과가 잘 보이도록 크기 약간 키움 */
-            font-weight: 500;      /* 굵게 해야 색상이 선명함 */
+            font-size: 0.95rem;
+            font-weight: 500;
             letter-spacing: -0.5px;
-            
-            /* 무지개 그라데이션 설정 */
             background: linear-gradient(to right, #ff5f6d, #ffc371, #ffef96, #56ab2f, #2f80ed, #9d50bb);
             background-size: 200% auto;
-            
-            /* 배경을 텍스트 모양으로 잘라내기 (핵심) */
             color: transparent;
             -webkit-background-clip: text;
             background-clip: text;
-            
-            /* 흐르는 애니메이션 적용 */
             animation: shine 3s linear infinite;
         }
         
-        /* 애니메이션 키프레임 (style 태그 내 아무 곳이나 추가) */
         @keyframes shine {
-            to {
-                background-position: 200% center;
-            }
+            to { background-position: 200% center; }
         }
     </style>
 </head>
@@ -168,11 +187,9 @@
     </div>
 
     <script>
-        /* [기존 로직 유지하되 수치 조정] */
         const dateWheels = ['year', 'month', 'day'];
         const timeWheels = ['ampm', 'hour', 'min'];
         const yearRange = [1944, 2026];
-        // 새 UI 디자인(34px 높이)에 정확히 맞춘 로직
         const itemHeight = 34;
 
         function init() {
@@ -243,7 +260,6 @@
 
         function getWheelVal(id) {
             const wheel = document.getElementById(`${id}-wheel`);
-            // 소수점 발생 시 가장 가까운 인덱스 선택
             const idx = Math.round(wheel.scrollTop / itemHeight);
             const items = wheel.querySelectorAll('li');
             
@@ -253,7 +269,6 @@
                 items[idx].classList.add('active');
                 return items[idx].dataset.val;
             }
-            // 값이 없을 경우 첫 번째 값이라도 반환하도록 방어 코드 추가
             return items[0] ? items[0].dataset.val : null;
         }
 
