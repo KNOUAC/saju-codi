@@ -36,7 +36,13 @@ def index():
 def analyze():
     # 시도할 모델 리스트
     candidate_models = [
-        "gemini-3-flash-preview"
+        "gemini-3-flash-preview",
+        "gemini-3-pro-preview",
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-lite",
+        "gemini-2.5-pro",
+        "gemini-2.0-flash",
+        "gemini-2.0-flash-lite"
     ]
     
     data = request.json
